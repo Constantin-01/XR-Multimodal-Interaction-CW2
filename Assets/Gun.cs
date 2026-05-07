@@ -7,18 +7,37 @@ public class Gun : MonoBehaviour
 
     public Transform firePoint;
 
+    public ParticleSystem muzzleFlash;
+
     public float bulletForce = 20f;
+
+    private bool isHeld = false;
+
+    public void SetHeldTrue()
+    {
+        isHeld = true;
+    }
+
+    public void SetHeldFalse()
+    {
+        isHeld = false;
+    }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F))
+        if (isHeld && Input.GetKeyDown(KeyCode.F))
         {
             Shoot();
         }
     }
 
     void Shoot()
+
     {
+        GetComponent<AudioSource>().Play();
+
+        muzzleFlash.Play();
+
         GameObject bullet = Instantiate(
             bulletPrefab,
             firePoint.position,
@@ -28,5 +47,7 @@ public class Gun : MonoBehaviour
         Rigidbody rb = bullet.GetComponent<Rigidbody>();
 
         rb.AddForce(firePoint.forward * bulletForce, ForceMode.Impulse);
+
+        Destroy(bullet, 5f);
     }
 }
